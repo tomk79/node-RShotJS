@@ -1,0 +1,10 @@
+{
+  "name": "RShotJS",
+  "version": "0.1.0b1",
+  "description": "",
+  "license": "MIT License",
+  "devDependencies": {
+    "csv": "~0.3.6",
+    "node-phantom": "*"
+  }
+}
