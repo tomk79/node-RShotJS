@@ -21,7 +21,7 @@
 		options.width = 1024;
 	}
 	if( !options.height ){
-		options.height = 100;
+		options.height = 600;
 	}
 	if( !options.userAgent ){
 		options.userAgent = 'Google Chrome';

@@ -75,8 +75,6 @@
 			var params = parsedUrl.query;
 			var path = parsedUrl.pathname;
 
-			var data = {};
-			data.label = params.label||'ダミーテキスト';
 
 			// ディレクトリトラバーサル防止
 			if (path.indexOf("..") != -1) {
@@ -88,7 +86,7 @@
 			}
 			fs.readFile(conf.documentRoot + path, function(error, bin){
 				if(error) {
-					response.writeHead(404, 'NotFound', {'Content-Type': 'text/html; charset=UTF-8'});
+					response.writeHead(404, 'NotFound', {'Content-Type': 'text/html'});
 					response.write('<!DOCTYPE html>');
 					response.write('<html>');
 					response.write('<head>');
@@ -115,9 +113,6 @@
 						case 'png':                          mime = 'image/png';break;
 						case 'svg':                          mime = 'image/svg+xml';break;
 					}
-
-					bin = bin.toString();
-					bin = bin.replace( '{$label}', data.label );
 
 					response.writeHead(200, { 'Content-Type': mime });
 					response.write(bin);
@@ -192,16 +187,17 @@
 			for( var deviceType in conf.userAgent ){
 				var fileName = md5(row['title'])+'_'+deviceType+'.png';
 
-				var cmd = './node_modules/phantomjs/bin/phantomjs '
-					+'./scripts/_phantom_capture.js '
-					+row['url']+' '
-					+conf.documentRoot+'/images/'+fileName+' '
-					+conf.userAgent[deviceType].width+' '
-					+'600'+' '
-					+'"'+conf.userAgent[deviceType].userAgent+'"'
-				;
+				(function(row,fileName,deviceType){
 
-				(function(row,fileName){
+					var cmd = './node_modules/phantomjs/bin/phantomjs '
+						+'./scripts/_phantom_capture.js '
+						+row['url']+' '
+						+conf.documentRoot+'/images/'+fileName+' '
+						+conf.userAgent[deviceType].width+' '
+						+'600'+' '
+						+'"'+conf.userAgent[deviceType].userAgent+'"'
+					;
+
 					exec(
 						cmd,
 						{timeout:0},
@@ -224,7 +220,7 @@
 							}
 						}
 					);
-				})(row,fileName);
+				})(row,fileName,deviceType);
 			}
 			htmlPdf += mkPdfPage(row, fileName);
 
@@ -241,6 +237,7 @@
 		htmlFin += '';
 		htmlFin += '<html>'+"\n";
 		htmlFin += '<head>'+"\n";
+		htmlFin += '<meta charset="UTF-8" />'+"\n";
 		htmlFin += '<title>preview '+h( Date('Y-m-d H:i:s') )+'</title>'+"\n";
 		htmlFin += '<style type="text/css">'+"\n";
 		htmlFin += '*{'+"\n";
@@ -300,15 +297,13 @@
 			+'./scripts/_phantom_pdf.js '
 			+'http://127.0.0.1:'+conf.port+'/ '
 			+conf.documentRoot+'/capture.pdf '
-			+'1024 '
-			+'600'+' '
-			+'"PDF"'
 		;
+		console.log( 'Generate PDF...' );
 		exec(
 			cmd,
 			{timeout:0},
 			function(error, stdout, stderr) {
-				console.log('        generating PDF done.');
+				console.log('    done.');
 				console.log( '' );
 				console.log( '' );
 				console.log( 'Done all.' );
@@ -344,7 +339,7 @@
 		$html_src += '<tr>'+"\n";
 		for( var deviceType in conf.userAgent ){
 			var deviceInfo = conf.userAgent[deviceType];
-			$html_src += '<td><img src="./images/'+md5(row['title'])+'_'+deviceType+'.png" alt="" /></td>'+"\n";
+			$html_src += '<td><img src="./images/'+md5(row['title'])+'_'+h(deviceType)+'.png" alt="'+h(row['url'])+' ('+h(deviceType)+')" /></td>'+"\n";
 		}
 
 		$html_src += '</tr>'+"\n";
