@@ -5,6 +5,8 @@
 (function() {
 	console.log('---------');
 	console.log('Starting "RShotJS.node.js"');
+	console.log('script filename = '+__filename);
+	console.log('working dir = '+__dirname);
 
 
 	var fs = require('fs');
@@ -14,6 +16,7 @@
 
 	var conf = {
 		documentRoot: __dirname+'/htdocs/',// ドキュメントルートのファイルパス
+		siteName: '---',// サイト名
 		pathCsv: __dirname+'/data.csv',// CSVファイルパス
 		pathOutput: __dirname+'/output/',// 出力ディレクトリパス
 		port: 80, // nodeサーバーのポート番号
@@ -26,10 +29,8 @@
 	};
 
 	console.log('version '+conf.version);
-	console.log('script filename = '+__filename);
-	console.log('working dir = '+__dirname);
 	console.log('---------');
-	console.log('');
+	console.log('conf = ');
 
 	// オプションを整理
 	var idx = 2;
@@ -43,11 +44,34 @@
 		return rtn;
 	})();
 
+	if( options.pathConf ){
+		// コンフィグファイルの指定があったら
+		// 他のオプションより先に読み込む
+		(function(){
+			var confJson = require( options.pathConf );
+			// オプションをコンフィグに反映
+			if( confJson.siteName )   { conf.siteName = confJson.siteName; }
+			if( confJson.pathCsv )    { conf.pathCsv = confJson.pathCsv; }
+			if( confJson.pathOutput ) { conf.pathOutput = confJson.pathOutput; }
+			if( confJson.port )       { conf.port = confJson.port; }
+			if( confJson.unit )       { conf.unit = confJson.unit; }
+			if( confJson.userAgent )  { conf.unit = confJson.userAgent; }
+		})();
+	}
+
 	// オプションをコンフィグに反映
+	if( options.siteName )  { conf.siteName = options.siteName; }
 	if( options.pathCsv )   { conf.pathCsv = options.pathCsv; }
 	if( options.pathOutput ){ conf.pathOutput = options.pathOutput; }
 	if( options.port )      { conf.port = options.port; }
 	if( options.unit )      { conf.unit = options.unit; }
+
+	console.log(conf);
+	console.log('');
+	console.log('---------');
+	console.log('');
+
+
 
 
 	function h(str){
@@ -183,6 +207,7 @@
 
 			var row = tasks[taskProgress];
 			console.log('    '+row.title);
+			console.log('    '+row.url);
 
 			for( var deviceType in conf.userAgent ){
 				var fileName = md5(row['title'])+'_'+deviceType+'.png';
@@ -296,14 +321,15 @@
 		var cmd = './node_modules/phantomjs/bin/phantomjs '
 			+'./scripts/_phantom_pdf.js '
 			+'http://127.0.0.1:'+conf.port+'/ '
-			+conf.documentRoot+'/capture.pdf '
+			+conf.documentRoot+'capture.pdf '
 		;
 		console.log( 'Generate PDF...' );
 		exec(
 			cmd,
 			{timeout:0},
 			function(error, stdout, stderr) {
-				console.log('    done.');
+				console.log( '    done.' );
+				console.log( '    see: '+conf.documentRoot+'capture.pdf' );
 				console.log( '' );
 				console.log( '' );
 				console.log( 'Done all.' );
@@ -318,19 +344,18 @@
 		var $html_src = '';
 		$html_src += '<!-- '+h(row['url'])+' -->'+"\n";
 		$html_src += '<div class="page_unit">'+"\n";
-		$html_src += '<h2>'+h(row['url'])+'</h2>'+"\n";
 		$html_src += '<table class="def" style="width:100%;margin-bottom:1em;">'+"\n";
 		$html_src += '<thead><tr>'+"\n";
 		$html_src += '<th>site name</th>'+"\n";
 		$html_src += '<th>page ID</th>'+"\n";
-		$html_src += '<th>path</th>'+"\n";
+		$html_src += '<th>url</th>'+"\n";
 		$html_src += '<th>page title</th>'+"\n";
 		$html_src += '<th>date</th>'+"\n";
 		$html_src += '</tr></thead>'+"\n";
 		$html_src += '<tr>'+"\n";
-		$html_src += '<td></td>'+"\n";
-		$html_src += '<td>' + h(row['id']) + '</td>'+"\n";
-		$html_src += '<td>' + h(row['path']) + '</td>'+"\n";
+		$html_src += '<td>' + h(conf.siteName) + '</td>'+"\n";
+		$html_src += '<td>' + h(row['page_id']) + '</td>'+"\n";
+		$html_src += '<td>' + h(row['url']) + '</td>'+"\n";
 		$html_src += '<td>' + h(row['title']) + '</td>'+"\n";
 		$html_src += '<td>' + h(Date('Y-m-d H:i:s')) + '</td>'+"\n";
 		$html_src += '</tr>'+"\n";
