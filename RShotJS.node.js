@@ -15,22 +15,21 @@
 	var exec = require('child_process').exec;
 
 	var conf = {
-		documentRoot: __dirname+'/htdocs/',// ドキュメントルートのファイルパス
 		siteName: '---',// サイト名
 		pathCsv: __dirname+'/data.csv',// CSVファイルパス
-		pathOutput: __dirname+'/output/',// 出力ディレクトリパス
+		pathOutput: __dirname+'/RShotJS_output/',// 出力ディレクトリパス
 		port: 80, // nodeサーバーのポート番号
 		unit: 1, // 1回の処理件数
 		userAgent: { // USER_AGENTの定義
-			pc:{width:1024, userAgent: 'Google Chrome'},
-			sp:{width: 320, userAgent: 'iPhone'}
+			pc:{width:1280, height:1024, userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/34.0.1847.116 Safari/537.36'},
+			sp:{width: 320, height: 568, userAgent: 'Mozilla/5.0 (iPhone; CPU iPhone OS 7_0 like Mac OS X) AppleWebKit/537.51.1 (KHTML, like Gecko) Version/7.0 Mobile/11A465 Safari/9537.53'}
 		},
 		version: '1.0.0-nb' // RShotJS.node.js のバージョン
 	};
 
 	console.log('version '+conf.version);
 	console.log('---------');
-	console.log('conf = ');
+	console.log('config = ');
 
 	// オプションを整理
 	var idx = 2;
@@ -55,16 +54,16 @@
 			if( confJson.pathOutput ) { conf.pathOutput = confJson.pathOutput; }
 			if( confJson.port )       { conf.port = confJson.port; }
 			if( confJson.unit )       { conf.unit = confJson.unit; }
-			if( confJson.userAgent )  { conf.unit = confJson.userAgent; }
+			if( confJson.userAgent )  { conf.userAgent = confJson.userAgent; }
 		})();
 	}
 
 	// オプションをコンフィグに反映
-	if( options.siteName )  { conf.siteName = options.siteName; }
-	if( options.pathCsv )   { conf.pathCsv = options.pathCsv; }
-	if( options.pathOutput ){ conf.pathOutput = options.pathOutput; }
-	if( options.port )      { conf.port = options.port; }
-	if( options.unit )      { conf.unit = options.unit; }
+	if( options.siteName )   { conf.siteName = options.siteName; }
+	if( options.pathCsv )    { conf.pathCsv = options.pathCsv; }
+	if( options.pathOutput ) { conf.pathOutput = options.pathOutput; }
+	if( options.port )       { conf.port = options.port; }
+	if( options.unit )       { conf.unit = options.unit; }
 
 	console.log(conf);
 	console.log('');
@@ -73,7 +72,7 @@
 
 
 
-
+	// utils
 	function h(str){
 		return str;
 	}
@@ -85,7 +84,12 @@
 		fs.writeSync(fd, str, 0, "ascii");
 		fs.closeSync(fd);
 		return true;
-	};
+	}
+	function dateFormat(){
+		var d = new Date();
+		return d.getFullYear() + '/' + (d.getMonth()+1) + '/' + d.getDate() + ' ' + d.getHours() + ':' + d.getMinutes() + '';
+	}
+	// / utils
 
 	// --------------------------------------
 	// setup webserver
@@ -108,7 +112,7 @@
 				// リクエストが「/」で終わっている場合、index.htmlをつける。
 				path += 'index.html';
 			}
-			fs.readFile(conf.documentRoot + path, function(error, bin){
+			fs.readFile(conf.pathOutput + path, function(error, bin){
 				if(error) {
 					response.writeHead(404, 'NotFound', {'Content-Type': 'text/html'});
 					response.write('<!DOCTYPE html>');
@@ -173,9 +177,11 @@
 					{}
 				)
 				.to.array(function(data){
+					var num = 0;
 					for( var i in data ){
 						var row = {};
 						var idx = 0;
+						row['num'] = (++num);
 						row['page_id'] = data[i][idx++];
 						row['title'] = data[i][idx++];
 						row['url'] = data[i][idx++];
@@ -217,9 +223,9 @@
 					var cmd = './node_modules/phantomjs/bin/phantomjs '
 						+'./scripts/_phantom_capture.js '
 						+row['url']+' '
-						+conf.documentRoot+'/images/'+fileName+' '
+						+conf.pathOutput+'/images/'+fileName+' '
 						+conf.userAgent[deviceType].width+' '
-						+'600'+' '
+						+conf.userAgent[deviceType].height+' '
 						+'"'+conf.userAgent[deviceType].userAgent+'"'
 					;
 
@@ -263,7 +269,7 @@
 		htmlFin += '<html>'+"\n";
 		htmlFin += '<head>'+"\n";
 		htmlFin += '<meta charset="UTF-8" />'+"\n";
-		htmlFin += '<title>preview '+h( Date('Y-m-d H:i:s') )+'</title>'+"\n";
+		htmlFin += '<title>preview '+h( dateFormat() )+'</title>'+"\n";
 		htmlFin += '<style type="text/css">'+"\n";
 		htmlFin += '*{'+"\n";
 		htmlFin += '	font-size:xx-small;'+"\n";
@@ -316,23 +322,25 @@
 		htmlFin += htmlPdf;
 		htmlFin += '</body>'+"\n";
 		htmlFin += '</html>';
-		fs.writeFileSync( conf.documentRoot+'/index.html' , htmlFin );
+		fs.writeFileSync( conf.pathOutput+'/index.html' , htmlFin );
 
 		var cmd = './node_modules/phantomjs/bin/phantomjs '
 			+'./scripts/_phantom_pdf.js '
 			+'http://127.0.0.1:'+conf.port+'/ '
-			+conf.documentRoot+'capture.pdf '
+			+conf.pathOutput+'/capture.pdf '
 		;
-		console.log( 'Generate PDF...' );
+		console.log( '' );
+		console.log( 'Generating PDF...' );
 		exec(
 			cmd,
 			{timeout:0},
 			function(error, stdout, stderr) {
 				console.log( '    done.' );
-				console.log( '    see: '+conf.documentRoot+'capture.pdf' );
+				console.log( '    see: '+conf.pathOutput+'/capture.pdf' );
 				console.log( '' );
 				console.log( '' );
 				console.log( 'Done all.' );
+				console.log( dateFormat() );
 				console.log( 'exit;'+"\n" );
 				process.exit();
 			}
@@ -346,6 +354,7 @@
 		$html_src += '<div class="page_unit">'+"\n";
 		$html_src += '<table class="def" style="width:100%;margin-bottom:1em;">'+"\n";
 		$html_src += '<thead><tr>'+"\n";
+		$html_src += '<th style="background-color:#aaa;">num</th>'+"\n";
 		$html_src += '<th>site name</th>'+"\n";
 		$html_src += '<th>page ID</th>'+"\n";
 		$html_src += '<th>url</th>'+"\n";
@@ -353,11 +362,12 @@
 		$html_src += '<th>date</th>'+"\n";
 		$html_src += '</tr></thead>'+"\n";
 		$html_src += '<tr>'+"\n";
+		$html_src += '<td>' + h(row['num']) + '</td>'+"\n";
 		$html_src += '<td>' + h(conf.siteName) + '</td>'+"\n";
 		$html_src += '<td>' + h(row['page_id']) + '</td>'+"\n";
 		$html_src += '<td>' + h(row['url']) + '</td>'+"\n";
 		$html_src += '<td>' + h(row['title']) + '</td>'+"\n";
-		$html_src += '<td>' + h(Date('Y-m-d H:i:s')) + '</td>'+"\n";
+		$html_src += '<td>' + h(dateFormat()) + '</td>'+"\n";
 		$html_src += '</tr>'+"\n";
 		$html_src += '</table>'+"\n";
 		$html_src += '<table class="page_capture">'+"\n";
@@ -375,6 +385,7 @@
 
 
 	// start
+	console.log('Start; '+dateFormat());
 	loadCSV();
 
 }).call(this);

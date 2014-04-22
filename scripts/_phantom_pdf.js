@@ -50,7 +50,7 @@
 					console.log('Error: Disable to save image file.');
 				}
 				return phantom.exit();
-			}, 500 );
+			}, 1000 );
 			return;
 		}else{
 			console.log('Error: on page loading. ('+status+' : '+options.url+')');

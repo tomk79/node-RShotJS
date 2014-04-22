@@ -42,8 +42,38 @@ $ node RShotJS.node.js port=8080
 下記はオプションの指定例。
 
 ```
-$ node RShotJS.node.js port=80 unit=1 pathCsv=./data.csv pathOutput=./output/
+$ node RShotJS.node.js port=8080 unit=1 pathCsv=./data.csv pathOutput=./RShotJS_output/
 ```
+
+### 設定ファイルの記述例
+
+オプション pathConf にパスを指定して、設定をJSONファイルで指定することができます。
+
+```
+$ node RShotJS.node.js pathConf=./conf_sample.json
+```
+
+次のコードは、JSONファイルの記述例です。
+
+```
+{
+	"siteName": "Site Name",
+	"pathCsv": "./data.csv",
+	"pathOutput": "./RShotJS_output/",
+	"port": 8080,
+	"unit": 2,
+	"userAgent": {
+		"pc":{"width":1280, "height":1024, "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/34.0.1847.116 Safari/537.36"},
+		"tb":{"width": 768, "height":1024, "userAgent": "Mozilla/5.0 (iPad; CPU iPhone OS 7_0 like Mac OS X) AppleWebKit/537.51.1 (KHTML, like Gecko) Version/7.0 Mobile/11A465 Safari/9537.53"},
+		"sp":{"width": 320, "height": 568, "userAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 7_0 like Mac OS X) AppleWebKit/537.51.1 (KHTML, like Gecko) Version/7.0 Mobile/11A465 Safari/9537.53"}
+	}
+}
+```
+
+項目は、すべて任意です。記述のない設定項目は、デフォルトの値で初期化されます。
+
+同名の項目をオプションとして指定した場合、オプションに指定した値が優先して採用され、JSONに書いた値は破棄されます。
+
 
 ## change log
 
