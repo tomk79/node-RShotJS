@@ -78,6 +78,10 @@ $ node RShotJS.node.js pathConf=./conf_sample.json
 
 ## change log
 
+### RShotJS.node.js 1.0.1 (2014/\*\*/\*\*)
+
+- \-\-\-\-\-\-\-\-\-\-\-\-\-\-
+
 ### RShotJS.node.js 1.0.0 (2014/4/22)
 
 - 初版リリース

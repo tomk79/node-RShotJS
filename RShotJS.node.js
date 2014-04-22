@@ -13,7 +13,7 @@
 	var csv = require('csv');//https://github.com/wdavidw/node-csv
 	var phantom = require('phantomjs');//https://github.com/alexscheelmeyer/node-phantom
 	var exec = require('child_process').exec;
-	var version = '1.0.0' // RShotJS.node.js のバージョン
+	var version = '1.0.00-nb' // RShotJS.node.js のバージョン
 
 
 	var conf = {
