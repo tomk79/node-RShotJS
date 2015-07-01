@@ -3,8 +3,8 @@
   "version": "1.0.0-nb",
   "description": "",
   "license": "MIT License",
-  "devDependencies": {
-    "csv": "~0.3.6",
-    "phantomjs": "~1.9.7"
+  "dependencies": {
+    "csv": "^0.3.*",
+    "phantomjs": "^1.9.17"
   }
 }
