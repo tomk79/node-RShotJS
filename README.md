@@ -5,22 +5,29 @@ PDFに貼り付けて印刷可能な状態で出力します。
 
 ## 使い方
 
-### 1. RShotJS.node.js をインストール
+### 1. `phantomjs` をインストール
 
 ```
+$ brew install phantomjs
+```
+
+### 2. RShotJS.node.js をインストール
+
+```
+$ brew install phantomjs
 $ cd (your directory)
 $ git clone https://github.com/tomk79/node-RShotJS.git
 $ cd node-RShotJS
 $ npm install
 ```
 
-### 2. data.csv を編集
+### 3. data.csv を編集
 
 ```
 $ vim data.csv
 ```
 
-### 3. キャプチャを撮る
+### 4. キャプチャを撮る
 
 ```
 $ node RShotJS.node.js port=8080
@@ -85,4 +92,3 @@ $ node RShotJS.node.js pathConf=./conf_sample.json
 ### RShotJS.node.js 1.0.0 (2014/4/22)
 
 - 初版リリース
-
