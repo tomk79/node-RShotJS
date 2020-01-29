@@ -11,7 +11,6 @@
 
 	var fs = require('fs');
 	var csv = require('csv');//https://github.com/wdavidw/node-csv
-	var phantom = require('phantomjs');//https://github.com/alexscheelmeyer/node-phantom
 	var exec = require('child_process').exec;
 	var version = '1.0.00-nb' // RShotJS.node.js のバージョン
 
@@ -20,7 +19,7 @@
 		siteName: '---',// サイト名
 		pathCsv: __dirname+'/data.csv',// CSVファイルパス
 		pathOutput: __dirname+'/RShotJS_output/',// 出力ディレクトリパス
-		port: 80, // nodeサーバーのポート番号
+		port: 8080, // nodeサーバーのポート番号
 		unit: 1, // 1回の処理件数
 		userAgent: { // USER_AGENTの定義
 			pc:{width:1280, height:1024, userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/34.0.1847.116 Safari/537.36'},
@@ -220,7 +219,7 @@
 
 					(function(row,fileName,deviceType){
 
-						var cmd = './node_modules/phantomjs/bin/phantomjs '
+						var cmd = 'phantomjs '
 							+'./scripts/_phantom_capture.js '
 							+row['url']+' '
 							+conf.pathOutput+'/images/'+fileName+' '
@@ -324,7 +323,7 @@
 			htmlFin += '</html>';
 			fs.writeFileSync( conf.pathOutput+'/index.html' , htmlFin );
 
-			var cmd = './node_modules/phantomjs/bin/phantomjs '
+			var cmd = 'phantomjs '
 				+'./scripts/_phantom_pdf.js '
 				+'http://127.0.0.1:'+conf.port+'/ '
 				+conf.pathOutput+'/capture.pdf '

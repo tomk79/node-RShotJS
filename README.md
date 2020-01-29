@@ -8,16 +8,16 @@ PDFに貼り付けて印刷可能な状態で出力します。
 ### 1. `phantomjs` をインストール
 
 ```
-$ brew install phantomjs
+$ brew cask install phantomjs
+$ phantomjs -v
+2.1.1
 ```
 
 ### 2. RShotJS.node.js をインストール
 
 ```
-$ brew install phantomjs
-$ cd (your directory)
-$ git clone https://github.com/tomk79/node-RShotJS.git
-$ cd node-RShotJS
+$ cd (your project directory)
+$ git clone https://github.com/tomk79/node-RShotJS.git ./
 $ npm install
 ```
 
@@ -41,9 +41,9 @@ $ node RShotJS.node.js port=8080
 ## オプション
 
 - siteName - 対象のサイト名。出力するPDFに記載される。
-- port - スクリプト内で立ち上げるサーバーのポート番号。省略時 80 を使用。
+- port - スクリプト内で立ち上げるローカルサーバーのポート番号。省略時 `8080` が使用される。
 - unit - 一度に投げるキューの数を指定。省略時は 1。同時に複数投げた方が、全体の処理は早く終る場合がある。
-- pathCsv - CSVのパスを指定。省略時、カレントディレクトリの ./data.csv を読み込む。
+- pathCsv - CSVのパスを指定。省略時、カレントディレクトリの `./data.csv` を読み込む。
 - pathOutput - 出力先ディレクトリを指定。省略時、カレントディレクトリに output ディレクトリを作成して書き出す。
 - pathConf - 設定ファイルのパスを指定します。設定ファイルとオプションに同じ項目を設定した場合、設定ファイルの内容よりもオプションの設定値が優先されます。
 
@@ -55,7 +55,7 @@ $ node RShotJS.node.js port=8080 unit=1 pathCsv=./data.csv pathOutput=./RShotJS_
 
 ### 設定ファイルの記述例
 
-オプション pathConf にパスを指定して、設定をJSONファイルで指定することができます。
+オプション `pathConf` にパスを指定して、設定をJSONファイルで指定することができます。
 
 ```
 $ node RShotJS.node.js pathConf=./conf_sample.json
@@ -63,7 +63,7 @@ $ node RShotJS.node.js pathConf=./conf_sample.json
 
 次のコードは、JSONファイルの記述例です。
 
-```
+```json
 {
 	"siteName": "Site Name",
 	"pathCsv": "./data.csv",
@@ -83,12 +83,31 @@ $ node RShotJS.node.js pathConf=./conf_sample.json
 同名の項目をオプションとして指定した場合、オプションに指定した値が優先して採用され、JSONに書いた値は破棄されます。
 
 
-## change log
+## 環境 - Requirements
 
-### RShotJS.node.js 1.0.1 (2014/\*\*/\*\*)
+- phantomjs: v2.1.1 or later
+- nodejs: v10.15.0 or later
 
-- \-\-\-\-\-\-\-\-\-\-\-\-\-\-
 
-### RShotJS.node.js 1.0.0 (2014/4/22)
+## 更新履歴 - Change log
+
+### RShotJS.node.js 1.1.0 (リリース日未定)
+
+- `phantomjs` コマンド (v2.1.1) に依存するように変更。
+- デフォルトのポート番号を `8080` に変更。
+
+### RShotJS.node.js 1.0.0 (2014年4月22日)
 
 - 初版リリース
+
+
+## ライセンス - License
+
+MIT License
+
+
+## 作者 - Author
+
+- Tomoya Koyanagi <tomk79@gmail.com>
+- website: <https://www.pxt.jp/>
+- Twitter: @tomk79 <https://twitter.com/tomk79/>

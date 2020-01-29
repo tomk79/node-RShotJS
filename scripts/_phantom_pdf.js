@@ -1,12 +1,13 @@
 (function() {
-	console.debug(phantom.args);
+	var system = require('system');
+	console.debug(system.args);
 	var fs = require('fs');
 	var options = {
-		url: phantom.args[0],
-		saveTo: phantom.args[1],
-		width: phantom.args[2],
-		height: phantom.args[3],
-		userAgent: phantom.args[4]
+		url: system.args[1],
+		saveTo: system.args[2],
+		width: system.args[3],
+		height: system.args[4],
+		userAgent: system.args[5]
 	};
 
 	if( !options.url ){
@@ -26,6 +27,11 @@
 	if( !options.userAgent ){
 		options.userAgent = 'Google Chrome';
 	}
+	console.debug(options.url);
+	console.debug(options.saveTo);
+	console.debug(options.width);
+	console.debug(options.height);
+	console.debug(options.userAgent);
 
 	var webpage = require('webpage').create();
 	webpage.viewportSize = {
@@ -44,11 +50,7 @@
 	webpage.open(options.url, function(status) {
 		if (status === 'success') {
 			window.setTimeout( function(){
-				if( webpage.render( options.saveTo ) ){//←保存先パスの拡張子が *.pdf であれば
-					console.log('Success!');
-				}else{
-					console.log('Error: Disable to save image file.');
-				}
+				webpage.render( options.saveTo, {format: 'pdf', quality: 100} );
 				return phantom.exit();
 			}, 1000 );
 			return;
