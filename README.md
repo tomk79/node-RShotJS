@@ -7,11 +7,18 @@ PDFに貼り付けて印刷可能な状態で出力します。
 
 ### 1. `phantomjs` をインストール
 
+RShotJS は、 `phantomjs` コマンドに依存します。
+[公式ページ](https://phantomjs.org/) を参照してインストールしてください。
+
+または、 macOS の場合は、 [Homebrew](https://brew.sh/) でもインストールもできます。
+
 ```
 $ brew cask install phantomjs
 $ phantomjs -v
 2.1.1
 ```
+
+※ 注意: PhantomJS は、 2016年1月 リリースの v2.1.1 を最後に、開発が終了しました。
 
 ### 2. RShotJS.node.js をインストール
 
