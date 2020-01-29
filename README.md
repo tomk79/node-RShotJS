@@ -98,12 +98,12 @@ $ node RShotJS.node.js pathConf=./conf_sample.json
 
 ## 更新履歴 - Change log
 
-### RShotJS.node.js 1.1.0 (リリース日未定)
+### RShotJS.node.js v1.1.0 (2020年1月29日)
 
 - `phantomjs` コマンド (v2.1.1) に依存するように変更。
 - デフォルトのポート番号を `8080` に変更。
 
-### RShotJS.node.js 1.0.0 (2014年4月22日)
+### RShotJS.node.js v1.0.0 (2014年4月22日)
 
 - 初版リリース
 

@@ -12,7 +12,7 @@
 	var fs = require('fs');
 	var csv = require('csv');//https://github.com/wdavidw/node-csv
 	var exec = require('child_process').exec;
-	var version = '1.0.00-nb' // RShotJS.node.js のバージョン
+	var version = JSON.parse(require('fs').readFileSync(__dirname+'/package.json')).version; // RShotJS.node.js のバージョン
 
 
 	var conf = {
